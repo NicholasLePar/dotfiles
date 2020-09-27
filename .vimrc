@@ -1,5 +1,3 @@
-" User Vim customizations, add any customizations to your vim configuration below"
-
 "===Sets no wrapping===
 set nowrap
 
@@ -40,3 +38,6 @@ set ignorecase
 set smartcase
 set hlsearch
 
+"===set vertical colour column to 81 chars=="
+set colorcolumn=81
+highlight ColorColumn ctermbg=240 guibg=240
