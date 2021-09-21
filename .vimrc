@@ -9,13 +9,39 @@ set smartindent
 set number
 
 "===Highlight trailing whitespace===
-"have this highlighting not appear whilst you are typing in insert mode
-"have the highlighting of whitespace apply when you open new buffers
-autocmd ColorScheme * highlight ExtraWhitespace ctermbg=lightred guibg=lightred
-autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-autocmd InsertLeave * match ExtraWhitespace /\s\+$/
-autocmd BufWinLeave * call clearmatches()
+"Add functionality to toggle highlighting of whitespace either on or off: \w
+"define toggleHighlightWhitespace
+let g:toggleHighlightWhitespace = 1
+function! ToggleHighlightWhitespace()
+  let g:toggleHighlightWhitespace = 1 - g:toggleHighlightWhitespace
+  call RefreshHighlightWhitespace()
+endfunction
+
+"define the highlight whitespace function and check for flag
+function! RefreshHighlightWhitespace()
+  if g:toggleHighlightWhitespace == 1 " normal action, do the hi
+    highlight ExtraWhitespace ctermbg=210
+    match ExtraWhitespace /\s\+$/
+    augroup HighLightWhitespace
+      autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+      autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+      autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+      autocmd BufWinLeave * call clearmatches()
+    augroup END
+  else " clear whitespace highlighting
+    call clearmatches()
+    autocmd! HighLightWhitespace BufWinEnter
+    autocmd! HighLightWhitespace InsertEnter
+    autocmd! HighLightWhitespace InsertLeave
+    autocmd! HighLightWhitespace BufWinLeave
+  endif
+endfunction
+
+autocmd BufWinEnter * call RefreshHighlightWhitespace()
+autocmd BufWinLeave * call RefreshHighlightWhitespace()
+"toggle whitespace using \w
+nnoremap <leader>w :call ToggleHighlightWhitespace()<cr>
+
 
 "===set color scheme===
 colorscheme desert
@@ -40,4 +66,5 @@ set hlsearch
 
 "===set vertical colour column to 81 chars=="
 set colorcolumn=81
-highlight ColorColumn ctermbg=240 guibg=240
+highlight ColorColumn ctermbg=240
+
