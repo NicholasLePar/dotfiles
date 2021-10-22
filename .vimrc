@@ -42,6 +42,8 @@ autocmd BufWinLeave * call RefreshHighlightWhitespace()
 "toggle whitespace using \w
 nnoremap <leader>w :call ToggleHighlightWhitespace()<cr>
 
+"=== Delete trailing whitespace prior to saving===
+autocmd BufWritePre * :%s/\s\+$//e
 
 "===set color scheme===
 colorscheme desert
